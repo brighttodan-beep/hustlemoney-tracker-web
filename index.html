@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>HustleMoney Tracker - Web</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: #0f172a;
+      color: #e5e7eb;
+      margin: 0;
+      padding: 0;
+    }
+    .app-container {
+      max-width: 480px;
+      margin: 0 auto;
+      padding: 16px;
+    }
+    .title {
+      text-align: center;
+      margin-bottom: 8px;
+    }
+    .title h1 {
+      font-size: 1.4rem;
+      margin: 0;
+    }
+    .title p {
+      margin: 4px 0 0;
+      font-size: 0.85rem;
+      color: #9ca3af;
+    }
+    .currency-row {
+      margin-top: 8px;
+      display: flex;
+      justify-content: center;
+      gap: 8px;
+      align-items: center;
+      font-size: 0.8rem;
+    }
+    .currency-row label {
+      color: #9ca3af;
+    }
+    .card {
+      background: #111827;
+      border-radius: 12px;
+      padding: 12px;
+      margin-bottom: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+    }
+    .summary-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      font-size: 0.85rem;
+    }
+    .summary-item {
+      text-align: center;
+      padding: 6px;
+      border-radius: 8px;
+      background: #020617;
+    }
+    .summary-label {
+      color: #9ca3af;
+      font-size: 0.75rem;
+    }
+    .summary-value {
+      font-weight: 600;
+      margin-top: 4px;
+    }
+    .summary-income { color: #22c55e; }
+    .summary-expense { color: #ef4444; }
+    .summary-balance { color: #facc15; }
+
+    .form-row {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      margin-bottom: 8px;
+      font-size: 0.9rem;
+    }
+    label {
+      font-size: 0.8rem;
+      color: #9ca3af;
+    }
+    input, select {
+      padding: 8px;
+      border-radius: 8px;
+      border: 1px solid #1f2937;
+      background: #020617;
+      color: #e5e7eb;
+      font-size: 0.9rem;
+    }
+    input:focus, select:focus {
+      outline: none;
+      border-color: #22c55e;
+    }
+    .btn-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 4px;
+    }
+    button {
+      flex: 1;
+      border: none;
+      border-radius: 999px;
+      padding: 8px 12px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      background: #22c55e;
+      color: #020617;
+    }
+    button.secondary {
+      background: #1f2937;
+      color: #e5e7eb;
+    }
+    button.danger {
+      background: #ef4444;
+      color: #f9fafb;
+    }
+    button.small {
+      flex: 0 0 auto;
+      font-size: 0.75rem;
+      padding: 6px 10px;
+    }
+    button:active {
+      transform: scale(0.97);
+    }
+
+    .list {
+      max-height: 260px;
+      overflow-y: auto;
+      font-size: 0.8rem;
+    }
+    .list-section-title {
+      font-weight: 600;
+      margin: 4px 0;
+      font-size: 0.9rem;
+    }
+    .tx-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 6px 0;
+      border-bottom: 1px solid #1f2937;
+    }
+    .tx-left {
+      max-width: 70%;
+    }
+    .tx-type {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: #9ca3af;
+    }
+    .tx-label {
+      font-size: 0.85rem;
+      font-weight: 500;
+    }
+    .tx-meta {
+      font-size: 0.75rem;
+      color: #9ca3af;
+    }
+    .tx-amount-income {
+      color: #22c55e;
+      font-weight: 600;
+    }
+    .tx-amount-expense {
+      color: #ef4444;
+      font-weight: 600;
+    }
+
+    .footer {
+      text-align: center;
+      font-size: 0.7rem;
+      color: #6b7280;
+      margin-top: 12px;
+      padding-bottom: 8px;
+    }
+
+    @media (max-width: 480px) {
+      .app-container {
+        padding: 12px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="app-container">
+    <div class="title">
+      <h1>HustleMoney Tracker v1.0</h1>
+      <p>Developed by Bright TODAN – Web Edition</p>
+
+      <div class="currency-row">
+        <label for="currency">Currency:</label>
+        <select id="currency">
+          <option value="USD">$ – USD</option>
+          <option value="CFA">Fr – CFA</option>
+          <option value="GHS">₵ – GHS</option>
+          <option value="NGN">₦ – NGN</option>
+          <option value="EUR">€ – EUR</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Summary Card -->
+    <div class="card">
+      <div class="summary-grid">
+        <div class="summary-item">
+          <div class="summary-label">Total Income</div>
+          <div id="totalIncome" class="summary-value summary-income">$ 0.00</div>
+        </div>
+        <div class="summary-item">
+          <div class="summary-label">Total Expense</div>
+          <div id="totalExpense" class="summary-value summary-expense">$ 0.00</div>
+        </div>
+        <div class="summary-item">
+          <div class="summary-label">Balance</div>
+          <div id="balance" class="summary-value summary-balance">$ 0.00</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Form Card -->
+    <div class="card">
+      <div class="form-row">
+        <label for="type">Type</label>
+        <select id="type">
+          <option value="income">Income</option>
+          <option value="expense">Expense</option>
+        </select>
+      </div>
+
+      <div class="form-row">
+        <label for="amount">Amount</label>
+        <input id="amount" type="number" step="0.01" placeholder="e.g. 2500" />
+      </div>
+
+      <div class="form-row">
+        <label for="label">Source / Category</label>
+        <input id="label" type="text" placeholder="e.g. USC Talent, Internet, Food..." />
+      </div>
+
+      <div class="form-row">
+        <label for="date">Date</label>
+        <input id="date" type="date" />
+      </div>
+
+      <div class="btn-row">
+        <button id="addBtn">Add Transaction</button>
+        <button id="undoBtn" class="secondary small">Undo Last</button>
+      </div>
+    </div>
+
+    <!-- Transactions Card -->
+    <div class="card">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+        <span class="list-section-title">Transactions</span>
+        <div class="btn-row" style="gap:6px;">
+          <button id="exportBtn" class="secondary small">Export CSV</button>
+          <button id="clearBtn" class="danger small">Clear All</button>
+        </div>
+      </div>
+      <div id="txList" class="list">
+        <!-- Transactions will appear here -->
+      </div>
+    </div>
+
+    <div class="footer">
+      Data is stored in your browser (local only).<br />
+      HustleMoney Tracker – Bright TODAN.
+    </div>
+  </div>
+
+  <script>
+    const STORAGE_KEY = "hustlemoney_transactions_v1";
+    const CURRENCY_KEY = "hustlemoney_currency_v1";
+
+    let transactions = [];
+    let currency = "USD"; // default
+
+    const totalIncomeEl = document.getElementById("totalIncome");
+    const totalExpenseEl = document.getElementById("totalExpense");
+    const balanceEl = document.getElementById("balance");
+    const txListEl = document.getElementById("txList");
+
+    const typeEl = document.getElementById("type");
+    const amountEl = document.getElementById("amount");
+    const labelEl = document.getElementById("label");
+    const dateEl = document.getElementById("date");
+    const currencyEl = document.getElementById("currency");
+
+    const addBtn = document.getElementById("addBtn");
+    const undoBtn = document.getElementById("undoBtn");
+    const exportBtn = document.getElementById("exportBtn");
+    const clearBtn = document.getElementById("clearBtn");
+
+    function currencySymbol() {
+      switch (currency) {
+        case "USD": return "$";
+        case "CFA": return "Fr";
+        case "GHS": return "₵";
+        case "NGN": return "₦";
+        case "EUR": return "€";
+        default: return "";
+      }
+    }
+
+    function formatNumber(n) {
+      return Number(n).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    }
+
+    function loadCurrency() {
+      const saved = localStorage.getItem(CURRENCY_KEY);
+      if (saved) {
+        currency = saved;
+      } else {
+        currency = "USD";
+      }
+      currencyEl.value = currency;
+    }
+
+    function saveCurrency() {
+      localStorage.setItem(CURRENCY_KEY, currency);
+    }
+
+    function loadTransactions() {
+      const saved = localStorage.getItem(STORAGE_KEY);
+      if (saved) {
+        try {
+          transactions = JSON.parse(saved);
+        } catch (e) {
+          transactions = [];
+        }
+      } else {
+        transactions = [];
+      }
+      render();
+    }
+
+    function saveTransactions() {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(transactions));
+    }
+
+    function getTodayISO() {
+      const d = new Date();
+      const year = d.getFullYear();
+      const month = String(d.getMonth() + 1).padStart(2, "0");
+      const day = String(d.getDate()).padStart(2, "0");
+      return `${year}-${month}-${day}`;
+    }
+
+    function render() {
+      let totalIncome = 0;
+      let totalExpense = 0;
+
+      txListEl.innerHTML = "";
+
+      transactions.forEach((tx) => {
+        if (tx.type === "income") totalIncome += tx.amount;
+        else if (tx.type === "expense") totalExpense += tx.amount;
+
+        const row = document.createElement("div");
+        row.className = "tx-item";
+
+        const left = document.createElement("div");
+        left.className = "tx-left";
+
+        const typeSpan = document.createElement("div");
+        typeSpan.className = "tx-type";
+        typeSpan.textContent = tx.type === "income" ? "INCOME" : "EXPENSE";
+
+        const labelSpan = document.createElement("div");
+        labelSpan.className = "tx-label";
+        labelSpan.textContent = tx.label || "(no label)";
+
+        const metaSpan = document.createElement("div");
+        metaSpan.className = "tx-meta";
+        metaSpan.textContent = `${tx.date || "no date"}`;
+
+        left.appendChild(typeSpan);
+        left.appendChild(labelSpan);
+        left.appendChild(metaSpan);
+
+        const right = document.createElement("div");
+        right.className = tx.type === "income" ? "tx-amount-income" : "tx-amount-expense";
+        const sign = tx.type === "income" ? "+" : "-";
+        right.textContent = `${sign} ${currencySymbol()} ${formatNumber(tx.amount)}`;
+
+        row.appendChild(left);
+        row.appendChild(right);
+
+        txListEl.appendChild(row);
+      });
+
+      const balance = totalIncome - totalExpense;
+      const sym = currencySymbol();
+      totalIncomeEl.textContent = `${sym} ${formatNumber(totalIncome)}`;
+      totalExpenseEl.textContent = `${sym} ${formatNumber(totalExpense)}`;
+      balanceEl.textContent = `${sym} ${formatNumber(balance)}`;
+    }
+
+    function addTransaction() {
+      const type = typeEl.value;
+      const amountValue = amountEl.value.trim();
+      const label = labelEl.value.trim();
+      const dateVal = dateEl.value || getTodayISO();
+
+      if (!amountValue) {
+        alert("Please enter an amount.");
+        return;
+      }
+
+      const amount = parseFloat(amountValue);
+      if (isNaN(amount) || amount <= 0) {
+        alert("Please enter a valid positive number.");
+        return;
+      }
+
+      const tx = {
+        type,
+        amount,
+        label,
+        date: dateVal
+      };
+
+      transactions.push(tx);
+      saveTransactions();
+      render();
+
+      amountEl.value = "";
+      labelEl.value = "";
+    }
+
+    function undoLast() {
+      if (transactions.length === 0) {
+        alert("No transactions to undo.");
+        return;
+      }
+      const last = transactions.pop();
+      saveTransactions();
+      render();
+      alert(`Last transaction undone: ${last.type} - ${currencySymbol()} ${formatNumber(last.amount)} (${last.label || "no label"})`);
+    }
+
+    function clearAll() {
+      if (!confirm("Are you sure you want to delete ALL transactions? This cannot be undone.")) {
+        return;
+      }
+      transactions = [];
+      saveTransactions();
+      render();
+    }
+
+    function exportCSV() {
+      if (transactions.length === 0) {
+        alert("No data to export.");
+        return;
+      }
+
+      const header = ["type", "amount", "label", "date", "currency"];
+      const rows = transactions.map(tx => [
+        tx.type,
+        tx.amount,
+        tx.label || "",
+        tx.date || "",
+        currency
+      ]);
+
+      const csvContent = [header, ...rows]
+        .map(row => row
+          .map(field => {
+            const s = String(field).replace(/"/g, '""');
+            return `"${s}"`;
+          })
+          .join(","))
+        .join("\r\n");
+
+      const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "records_web.csv";
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    }
+
+    dateEl.value = getTodayISO();
+
+    addBtn.addEventListener("click", addTransaction);
+    undoBtn.addEventListener("click", undoLast);
+    clearBtn.addEventListener("click", clearAll);
+    exportBtn.addEventListener("click", exportCSV);
+
+    currencyEl.addEventListener("change", () => {
+      currency = currencyEl.value;
+      saveCurrency();
+      render();
+    });
+
+    loadCurrency();
+    loadTransactions();
+  </script>
+</body>
+</html>
