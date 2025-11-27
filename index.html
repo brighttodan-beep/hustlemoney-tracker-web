@@ -4,6 +4,8 @@
   <meta charset="UTF-8" />
   <title>HustleMoney Tracker - Web</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#0f172a" />
+  <link rel="manifest" href="manifest.webmanifest" />
   <style>
     body {
       font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
@@ -489,13 +491,20 @@
       URL.revokeObjectURL(url);
     }
 
+    function registerServiceWorker() {
+      if ("serviceWorker" in navigator) {
+        navigator.serviceWorker.register("sw.js").catch((err) => {
+          console.log("Service worker registration failed:", err);
+        });
+      }
+    }
+
     dateEl.value = getTodayISO();
 
     addBtn.addEventListener("click", addTransaction);
     undoBtn.addEventListener("click", undoLast);
     clearBtn.addEventListener("click", clearAll);
     exportBtn.addEventListener("click", exportCSV);
-
     currencyEl.addEventListener("change", () => {
       currency = currencyEl.value;
       saveCurrency();
@@ -504,6 +513,7 @@
 
     loadCurrency();
     loadTransactions();
+    registerServiceWorker();
   </script>
 </body>
 </html>
