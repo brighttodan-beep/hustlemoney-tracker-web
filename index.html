@@ -350,6 +350,63 @@
       padding-bottom: 8px;
     }
 
+    /* LOCK SCREEN */
+    .lock-screen {
+      position: fixed;
+      inset: 0;
+      background: rgba(15,23,42,0.96);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 50;
+    }
+    .lock-card {
+      background: #020617;
+      border-radius: 16px;
+      padding: 20px 16px;
+      border: 1px solid #1f2937;
+      box-shadow: 0 12px 30px rgba(0,0,0,0.8);
+      max-width: 320px;
+      width: 100%;
+      text-align: center;
+    }
+    .lock-card h2 {
+      margin: 0 0 8px;
+      font-size: 1.1rem;
+    }
+    .lock-card p {
+      margin: 4px 0 10px;
+      font-size: 0.85rem;
+      color: #9ca3af;
+    }
+    .lock-card input {
+      width: 100%;
+      text-align: center;
+      letter-spacing: 0.3em;
+      font-size: 1.1rem;
+      padding: 8px;
+      border-radius: 999px;
+      border: 1px solid #1f2937;
+      background: #020617;
+      color: #e5e7eb;
+      margin-bottom: 10px;
+    }
+    .lock-card input:focus {
+      outline: none;
+      border-color: #22c55e;
+    }
+    .lock-buttons {
+      display: flex;
+      gap: 8px;
+      justify-content: center;
+      margin-bottom: 6px;
+    }
+    .lock-message {
+      font-size: 0.8rem;
+      color: #f97316;
+      min-height: 1em;
+    }
+
     @media (max-width: 480px) {
       .page {
         padding: 12px;
@@ -361,6 +418,20 @@
   </style>
 </head>
 <body>
+  <!-- LOCK SCREEN -->
+  <div id="lockScreen" class="lock-screen">
+    <div class="lock-card">
+      <h2 id="lockTitle">HustleMoney Lock</h2>
+      <p id="lockSubtitle">Set a 4-digit PIN to protect your data on this device.</p>
+      <input id="lockPinInput" type="password" maxlength="4" inputmode="numeric" />
+      <div class="lock-buttons">
+        <button id="lockPrimaryBtn">Save PIN</button>
+        <button id="lockResetBtn" class="danger small" style="display:none;">Reset data & PIN</button>
+      </div>
+      <p id="lockMessage" class="lock-message"></p>
+    </div>
+  </div>
+
   <div class="page">
     <!-- MINI LANDING / HERO -->
     <section class="hero">
@@ -566,11 +637,15 @@
     const STORAGE_KEY = "hustlemoney_transactions_v1";
     const CURRENCY_KEY = "hustlemoney_currency_v1";
     const LANG_KEY = "hustlemoney_lang_v1";
+    const PIN_KEY = "hustlemoney_pin_v1";
 
     let transactions = [];
     let currency = "USD"; // default
     let categoryChart = null;
     let currentLang = "en";
+    let appInitialized = false;
+    let savedPin = null;
+    let isUnlockMode = false;
 
     const translations = {
       en: {
@@ -627,7 +702,6 @@
 
         footerText: "Data is stored in your browser (local only).\nHustleMoney Tracker – Bright TODAN.",
 
-        // Category dropdown labels
         catGeneral: "General",
         catFood: "Food",
         catTransport: "Transport",
@@ -765,6 +839,15 @@
     const heroCtaPrimaryEl = document.getElementById("heroCtaPrimary");
     const heroCtaSecondaryEl = document.getElementById("heroCtaSecondary");
 
+    // LOCK ELEMENTS
+    const lockScreenEl = document.getElementById("lockScreen");
+    const lockTitleEl = document.getElementById("lockTitle");
+    const lockSubtitleEl = document.getElementById("lockSubtitle");
+    const lockPinInputEl = document.getElementById("lockPinInput");
+    const lockPrimaryBtnEl = document.getElementById("lockPrimaryBtn");
+    const lockResetBtnEl = document.getElementById("lockResetBtn");
+    const lockMessageEl = document.getElementById("lockMessage");
+
     function currencySymbol() {
       switch (currency) {
         case "USD": return "$";
@@ -813,7 +896,6 @@
     }
 
     function applyTranslations() {
-      // Hero
       heroBadgeEl.textContent = t("heroBadge");
       heroSubEl.textContent = t("heroSub");
       heroFeat1TitleEl.textContent = t("heroFeat1Title");
@@ -827,43 +909,35 @@
       heroCtaPrimaryEl.textContent = t("heroCtaPrimary");
       heroCtaSecondaryEl.textContent = t("heroCtaSecondary");
 
-      // Filters
       currencyLabelEl.textContent = t("currencyLabel");
       monthLabelEl.textContent = t("monthLabel");
       languageLabelEl.textContent = t("languageLabel");
 
-      // Summary labels
       totalIncomeLabelEl.textContent = t("totalIncomeLabel");
       totalExpenseLabelEl.textContent = t("totalExpenseLabel");
       balanceLabelEl.textContent = t("balanceLabel");
 
-      // Form labels
       typeLabelEl.textContent = t("typeLabel");
       amountLabelLabelEl.textContent = t("amountLabel");
       categoryLabelLabelEl.textContent = t("categoryLabel");
       noteLabelLabelEl.textContent = t("noteLabel");
       dateLabelLabelEl.textContent = t("dateLabel");
 
-      // Buttons
       addBtn.textContent = t("addTransactionButton");
       undoBtn.textContent = t("undoLastButton");
       exportBtn.textContent = t("exportCsvButton");
       clearBtn.textContent = t("clearAllButton");
 
-      // Section titles
       transactionsTitleEl.textContent = t("transactionsTitle");
       spendingTitleEl.textContent = t("spendingTitle");
       chartNoteEl.textContent = t("chartNote");
 
-      // Table headers
       tableHeaderCategoryEl.textContent = t("tableHeaderCategory");
       tableHeaderAmountEl.textContent = t("tableHeaderAmount");
       tableHeaderPercentEl.textContent = t("tableHeaderPercent");
 
-      // Footer
       footerTextEl.innerHTML = t("footerText").replace("\n", "<br />");
 
-      // Category dropdown labels
       const catOptions = categoryEl.options;
       for (let i = 0; i < catOptions.length; i++) {
         const opt = catOptions[i];
@@ -953,11 +1027,10 @@
       if (!tx.date) return true;
       const d = new Date(tx.date);
       if (isNaN(d.getTime())) return true;
-      const month = d.getMonth() + 1; // 1–12
+      const month = d.getMonth() + 1;
       return String(month) === selected;
     }
 
-    // EXPENSE-ONLY CATEGORY TOTALS
     function getExpenseCategoryTotals(filteredList) {
       const totals = {};
       filteredList.forEach((tx) => {
@@ -979,14 +1052,13 @@
         cell.colSpan = 3;
         cell.textContent = t("noData");
         cell.style.color = "#9ca3af";
-        categoryTotalsBody.appendChild(row);
         row.appendChild(cell);
+        categoryTotalsBody.appendChild(row);
         return;
       }
 
       const grandTotal = entries.reduce((sum, [, v]) => sum + v, 0);
-
-      entries.sort((a, b) => b[1] - a[1]); // biggest first
+      entries.sort((a, b) => b[1] - a[1]);
 
       entries.forEach(([cat, amount]) => {
         const row = document.createElement("tr");
@@ -1085,7 +1157,6 @@
     function render() {
       let totalIncome = 0;
       let totalExpense = 0;
-
       txListEl.innerHTML = "";
 
       const filtered = transactions.filter(passesMonthFilter);
@@ -1147,7 +1218,7 @@
       const label = labelEl.value.trim();
       const category = categoryEl.value;
       const dateVal = dateEl.value || getTodayISO();
-      const timeVal = getCurrentTime(); // automatic current time
+      const timeVal = getCurrentTime();
 
       if (!amountValue) {
         alert(t("alertEnterAmount"));
@@ -1243,7 +1314,79 @@
       }
     }
 
-    function init() {
+    // --- PIN / LOCK LOGIC ---
+    function loadPin() {
+      savedPin = localStorage.getItem(PIN_KEY);
+    }
+
+    function showLockScreen() {
+      loadPin();
+      lockScreenEl.style.display = "flex";
+      if (savedPin) {
+        isUnlockMode = true;
+        lockTitleEl.textContent = "Enter your PIN";
+        lockSubtitleEl.textContent = "This protects your HustleMoney data on this device.";
+        lockPrimaryBtnEl.textContent = "Unlock";
+        lockResetBtnEl.style.display = "inline-block";
+      } else {
+        isUnlockMode = false;
+        lockTitleEl.textContent = "Set your 4-digit PIN";
+        lockSubtitleEl.textContent = "This PIN will protect your HustleMoney data on this device.";
+        lockPrimaryBtnEl.textContent = "Save PIN";
+        lockResetBtnEl.style.display = "none";
+      }
+      lockPinInputEl.value = "";
+      lockMessageEl.textContent = "";
+      setTimeout(() => lockPinInputEl.focus(), 50);
+    }
+
+    function hideLockScreen() {
+      lockScreenEl.style.display = "none";
+    }
+
+    function handleLockPrimary() {
+      const pin = lockPinInputEl.value.trim();
+      if (pin.length !== 4) {
+        lockMessageEl.textContent = "PIN must be 4 digits.";
+        return;
+      }
+      if (!/^\d{4}$/.test(pin)) {
+        lockMessageEl.textContent = "Use only numbers.";
+        return;
+      }
+
+      if (!isUnlockMode) {
+        localStorage.setItem(PIN_KEY, pin);
+        savedPin = pin;
+        lockMessageEl.textContent = "";
+        bootApp();
+        hideLockScreen();
+      } else {
+        if (pin === savedPin) {
+          lockMessageEl.textContent = "";
+          bootApp();
+          hideLockScreen();
+        } else {
+          lockMessageEl.textContent = "Incorrect PIN.";
+        }
+      }
+    }
+
+    function handleLockReset() {
+      const sure = confirm("This will erase ALL your HustleMoney data and your PIN on this device. Continue?");
+      if (!sure) return;
+      localStorage.removeItem(PIN_KEY);
+      localStorage.removeItem(STORAGE_KEY);
+      localStorage.removeItem(CURRENCY_KEY);
+      localStorage.removeItem(LANG_KEY);
+      location.reload();
+    }
+
+    // --- APP INIT ---
+    function bootApp() {
+      if (appInitialized) return;
+      appInitialized = true;
+
       dateEl.value = getTodayISO();
       loadCurrencyFirst();
       loadLanguageFirst();
@@ -1266,6 +1409,17 @@
         applyTranslations();
         render();
       });
+    }
+
+    function init() {
+      lockPrimaryBtnEl.addEventListener("click", handleLockPrimary);
+      lockResetBtnEl.addEventListener("click", handleLockReset);
+      lockPinInputEl.addEventListener("keydown", (e) => {
+        if (e.key === "Enter") {
+          handleLockPrimary();
+        }
+      });
+      showLockScreen();
     }
 
     init();
