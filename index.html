@@ -303,7 +303,7 @@
       font-weight: 600;
     }
 
-    /* Chart card */
+    /* Chart & totals */
     .chart-container {
       position: relative;
       width: 100%;
@@ -314,7 +314,34 @@
       color: #9ca3af;
       margin-top: 4px;
     }
-
+    .category-totals {
+      margin-top: 8px;
+      font-size: 0.8rem;
+    }
+    .category-totals-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    .category-totals-table th,
+    .category-totals-table td {
+      padding: 4px 6px;
+      border-bottom: 1px solid #1f2937;
+      text-align: left;
+    }
+    .category-totals-table th {
+      font-size: 0.75rem;
+      color: #9ca3af;
+      font-weight: 500;
+    }
+    .category-totals-table td.amount {
+      text-align: right;
+      white-space: nowrap;
+    }
+    .category-totals-table td.percent {
+      text-align: right;
+      white-space: nowrap;
+      color: #9ca3af;
+    }
     .footer {
       text-align: center;
       font-size: 0.7rem;
@@ -493,15 +520,29 @@
           </div>
         </div>
 
-        <!-- Category Pie Chart Card -->
+        <!-- Category Pie Chart + Totals Card -->
         <div class="card">
-          <div class="list-section-title">Spending by Category (filtered by month)</div>
+          <div class="list-section-title">Spending by Category (expenses only, filtered by month)</div>
           <div class="chart-container">
             <canvas id="categoryChart"></canvas>
           </div>
           <div class="chart-note">
-            This chart shows total amounts per category (income and expense combined, using absolute values)
-            for the selected month. “All” includes every month.
+            This chart and table show total <strong>expenses only</strong> per category for the selected month.
+            “All” includes every month.
+          </div>
+          <div class="category-totals">
+            <table class="category-totals-table">
+              <thead>
+                <tr>
+                  <th>Category</th>
+                  <th class="amount">Amount</th>
+                  <th class="percent">% of expenses</th>
+                </tr>
+              </thead>
+              <tbody id="categoryTotalsBody">
+                <!-- Filled by JavaScript -->
+              </tbody>
+            </table>
           </div>
         </div>
       </div>
@@ -539,6 +580,8 @@
     const exportBtn = document.getElementById("exportBtn");
     const clearBtn = document.getElementById("clearBtn");
 
+    const categoryTotalsBody = document.getElementById("categoryTotalsBody");
+
     function currencySymbol() {
       switch (currency) {
         case "USD": return "$";
@@ -551,7 +594,10 @@
     }
 
     function formatNumber(n) {
-      return Number(n).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+      return Number(n).toLocaleString(undefined, {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+      });
     }
 
     function loadCurrencyFirst() {
@@ -615,18 +661,63 @@
       return String(month) === selected;
     }
 
-    function getCategoryTotals(filteredList) {
+    // EXPENSE-ONLY CATEGORY TOTALS
+    function getExpenseCategoryTotals(filteredList) {
       const totals = {};
       filteredList.forEach((tx) => {
+        if (tx.type !== "expense") return;
         const cat = tx.category || "Uncategorized";
         if (!totals[cat]) totals[cat] = 0;
+        // Only expenses, but use absolute amount (in case future data has negative)
         totals[cat] += Math.abs(tx.amount);
       });
       return totals;
     }
 
-    function updateCategoryChart(filteredList) {
-      const totals = getCategoryTotals(filteredList);
+    function renderCategoryTotals(totals) {
+      categoryTotalsBody.innerHTML = "";
+      const entries = Object.entries(totals).filter(([_, v]) => v > 0);
+
+      if (entries.length === 0) {
+        const row = document.createElement("tr");
+        const cell = document.createElement("td");
+        cell.colSpan = 3;
+        cell.textContent = "No expense data for this period.";
+        cell.style.color = "#9ca3af";
+        row.appendChild(cell);
+        categoryTotalsBody.appendChild(row);
+        return;
+      }
+
+      const grandTotal = entries.reduce((sum, [, v]) => sum + v, 0);
+
+      entries.sort((a, b) => b[1] - a[1]); // biggest first
+
+      entries.forEach(([cat, amount]) => {
+        const row = document.createElement("tr");
+
+        const catTd = document.createElement("td");
+        catTd.textContent = cat;
+
+        const amountTd = document.createElement("td");
+        amountTd.className = "amount";
+        amountTd.textContent = `${currencySymbol()} ${formatNumber(amount)}`;
+
+        const percentTd = document.createElement("td");
+        percentTd.className = "percent";
+        const pct = grandTotal > 0 ? (amount / grandTotal) * 100 : 0;
+        percentTd.textContent = `${pct.toFixed(1)}%`;
+
+        row.appendChild(catTd);
+        row.appendChild(amountTd);
+        row.appendChild(percentTd);
+
+        categoryTotalsBody.appendChild(row);
+      });
+    }
+
+    function updateCategoryChart(expenseList) {
+      const totals = getExpenseCategoryTotals(expenseList);
       const labels = [];
       const data = [];
 
@@ -691,6 +782,9 @@
           }
         });
       }
+
+      // Also update the table with the same totals
+      renderCategoryTotals(totals);
     }
 
     function render() {
@@ -746,7 +840,9 @@
       totalExpenseEl.textContent = `${sym} ${formatNumber(totalExpense)}`;
       balanceEl.textContent = `${sym} ${formatNumber(balance)}`;
 
-      updateCategoryChart(filtered);
+      const expenseOnly = filtered.filter(tx => tx.type === "expense");
+      updateCategoryChart(expenseOnly);
+      // renderCategoryTotals is already called in updateCategoryChart with same totals
     }
 
     function addTransaction() {
