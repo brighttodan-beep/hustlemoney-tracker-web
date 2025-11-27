@@ -367,39 +367,39 @@
       <div class="hero-logo">
         <img src="logo.png" alt="HustleMoney logo" onerror="this.style.display='none';" />
       </div>
-      <div class="hero-badge">
+      <div class="hero-badge" id="heroBadge">
         💰 Track your cashflow • Web & PC
       </div>
       <h1 class="hero-title">HustleMoney Tracker</h1>
-      <p class="hero-sub">
+      <p class="hero-sub" id="heroSub">
         Simple income & expense tracker for students, hustlers and small business owners.
         Keep control of your money in a few taps.
       </p>
 
       <div class="hero-grid">
         <div class="hero-feature">
-          <div class="hero-feature-title">📊 Clear overview</div>
-          <div class="hero-feature-text">See total income, expenses and balance at a glance.</div>
+          <div class="hero-feature-title" id="heroFeat1Title">📊 Clear overview</div>
+          <div class="hero-feature-text" id="heroFeat1Text">See total income, expenses and balance at a glance.</div>
         </div>
         <div class="hero-feature">
-          <div class="hero-feature-title">📱 Works on phone</div>
-          <div class="hero-feature-text">Open in your browser or install it on your home screen.</div>
+          <div class="hero-feature-title" id="heroFeat2Title">📱 Works on phone</div>
+          <div class="hero-feature-text" id="heroFeat2Text">Open in your browser or install it on your home screen.</div>
         </div>
         <div class="hero-feature">
-          <div class="hero-feature-title">🌍 Multi-currency</div>
-          <div class="hero-feature-text">USD, CFA, GHS, NGN, EUR and more to come.</div>
+          <div class="hero-feature-title" id="heroFeat3Title">🌍 Multi-currency</div>
+          <div class="hero-feature-text" id="heroFeat3Text">USD, CFA, GHS, NGN, EUR and more to come.</div>
         </div>
         <div class="hero-feature">
-          <div class="hero-feature-title">📥 Export to Excel</div>
-          <div class="hero-feature-text">Download a CSV file with all your data.</div>
+          <div class="hero-feature-title" id="heroFeat4Title">📥 Export to Excel</div>
+          <div class="hero-feature-text" id="heroFeat4Text">Download a CSV file with all your data.</div>
         </div>
       </div>
 
       <div class="hero-cta-row">
-        <button class="btn-primary" onclick="document.getElementById('app').scrollIntoView({behavior:'smooth'});">
+        <button class="btn-primary" id="heroCtaPrimary" onclick="document.getElementById('app').scrollIntoView({behavior:'smooth'});">
           🚀 Open the tracker
         </button>
-        <button class="btn-ghost" onclick="document.getElementById('app').scrollIntoView({behavior:'smooth'});">
+        <button class="btn-ghost" id="heroCtaSecondary" onclick="document.getElementById('app').scrollIntoView({behavior:'smooth'});">
           View demo
         </button>
       </div>
@@ -413,7 +413,7 @@
           <p>HustleMoney Tracker v1.0 – Developed by Bright TODAN</p>
 
           <div class="row-filters">
-            <label for="currency">Currency:</label>
+            <label id="currencyLabel" for="currency">Currency:</label>
             <select id="currency">
               <option value="USD">$ – USD</option>
               <option value="CFA">Fr – CFA</option>
@@ -422,7 +422,7 @@
               <option value="EUR">€ – EUR</option>
             </select>
 
-            <label for="monthFilter">Month:</label>
+            <label id="monthLabel" for="monthFilter">Month:</label>
             <select id="monthFilter">
               <option value="all">All</option>
               <option value="1">January</option>
@@ -438,6 +438,12 @@
               <option value="11">November</option>
               <option value="12">December</option>
             </select>
+
+            <label id="languageLabel" for="langSelect">Language:</label>
+            <select id="langSelect">
+              <option value="en">English</option>
+              <option value="fr">Français</option>
+            </select>
           </div>
         </div>
 
@@ -445,15 +451,15 @@
         <div class="card">
           <div class="summary-grid">
             <div class="summary-item">
-              <div class="summary-label">Total Income</div>
+              <div class="summary-label" id="totalIncomeLabel">Total Income</div>
               <div id="totalIncome" class="summary-value summary-income">$ 0.00</div>
             </div>
             <div class="summary-item">
-              <div class="summary-label">Total Expense</div>
+              <div class="summary-label" id="totalExpenseLabel">Total Expense</div>
               <div id="totalExpense" class="summary-value summary-expense">$ 0.00</div>
             </div>
             <div class="summary-item">
-              <div class="summary-label">Balance</div>
+              <div class="summary-label" id="balanceLabel">Balance</div>
               <div id="balance" class="summary-value summary-balance">$ 0.00</div>
             </div>
           </div>
@@ -462,7 +468,7 @@
         <!-- Form Card -->
         <div class="card">
           <div class="form-row">
-            <label for="type">Type</label>
+            <label id="typeLabel" for="type">Type</label>
             <select id="type">
               <option value="income">Income</option>
               <option value="expense">Expense</option>
@@ -470,12 +476,12 @@
           </div>
 
           <div class="form-row">
-            <label for="amount">Amount</label>
+            <label id="amountLabel" for="amount">Amount</label>
             <input id="amount" type="number" step="0.01" placeholder="e.g. 2500" />
           </div>
 
           <div class="form-row">
-            <label for="category">Category</label>
+            <label id="categoryLabel" for="category">Category</label>
             <select id="category">
               <option value="General">General</option>
               <option value="Food">Food</option>
@@ -491,12 +497,12 @@
           </div>
 
           <div class="form-row">
-            <label for="label">Note (optional)</label>
+            <label id="noteLabel" for="label">Note (optional)</label>
             <input id="label" type="text" placeholder="Client, detail, reference, etc." />
           </div>
 
           <div class="form-row">
-            <label for="date">Date</label>
+            <label id="dateLabel" for="date">Date</label>
             <input id="date" type="date" />
           </div>
 
@@ -509,7 +515,7 @@
         <!-- Transactions Card -->
         <div class="card">
           <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
-            <span class="list-section-title">Transactions</span>
+            <span class="list-section-title" id="transactionsTitle">Transactions</span>
             <div class="btn-row" style="gap:6px;">
               <button id="exportBtn" class="secondary small">Export CSV</button>
               <button id="clearBtn" class="danger small">Clear All</button>
@@ -522,21 +528,23 @@
 
         <!-- Category Pie Chart + Totals Card -->
         <div class="card">
-          <div class="list-section-title">Spending by Category (expenses only, filtered by month)</div>
+          <div class="list-section-title" id="spendingTitle">
+            Spending by Category (expenses only, filtered by month)
+          </div>
           <div class="chart-container">
             <canvas id="categoryChart"></canvas>
           </div>
-          <div class="chart-note">
-            This chart and table show total <strong>expenses only</strong> per category for the selected month.
+          <div class="chart-note" id="chartNote">
+            This chart and table show total expenses only per category for the selected month.
             “All” includes every month.
           </div>
           <div class="category-totals">
             <table class="category-totals-table">
               <thead>
                 <tr>
-                  <th>Category</th>
-                  <th class="amount">Amount</th>
-                  <th class="percent">% of expenses</th>
+                  <th id="tableHeaderCategory">Category</th>
+                  <th class="amount" id="tableHeaderAmount">Amount</th>
+                  <th class="percent" id="tableHeaderPercent">% of expenses</th>
                 </tr>
               </thead>
               <tbody id="categoryTotalsBody">
@@ -548,7 +556,7 @@
       </div>
     </section>
 
-    <div class="footer">
+    <div class="footer" id="footerText">
       Data is stored in your browser (local only).<br />
       HustleMoney Tracker – Bright TODAN.
     </div>
@@ -557,11 +565,152 @@
   <script>
     const STORAGE_KEY = "hustlemoney_transactions_v1";
     const CURRENCY_KEY = "hustlemoney_currency_v1";
+    const LANG_KEY = "hustlemoney_lang_v1";
 
     let transactions = [];
     let currency = "USD"; // default
     let categoryChart = null;
+    let currentLang = "en";
 
+    const translations = {
+      en: {
+        heroBadge: "💰 Track your cashflow • Web & PC",
+        heroSub: "Simple income & expense tracker for students, hustlers and small business owners. Keep control of your money in a few taps.",
+        heroFeat1Title: "📊 Clear overview",
+        heroFeat1Text: "See total income, expenses and balance at a glance.",
+        heroFeat2Title: "📱 Works on phone",
+        heroFeat2Text: "Open in your browser or install it on your home screen.",
+        heroFeat3Title: "🌍 Multi-currency",
+        heroFeat3Text: "USD, CFA, GHS, NGN, EUR and more to come.",
+        heroFeat4Title: "📥 Export to Excel",
+        heroFeat4Text: "Download a CSV file with all your data.",
+        heroCtaPrimary: "🚀 Open the tracker",
+        heroCtaSecondary: "View demo",
+
+        currencyLabel: "Currency:",
+        monthLabel: "Month:",
+        languageLabel: "Language:",
+
+        totalIncomeLabel: "Total Income",
+        totalExpenseLabel: "Total Expense",
+        balanceLabel: "Balance",
+
+        typeLabel: "Type",
+        amountLabel: "Amount",
+        categoryLabel: "Category",
+        noteLabel: "Note (optional)",
+        dateLabel: "Date",
+
+        addTransactionButton: "Add Transaction",
+        undoLastButton: "Undo Last",
+        exportCsvButton: "Export CSV",
+        clearAllButton: "Clear All",
+
+        transactionsTitle: "Transactions",
+
+        spendingTitle: "Spending by Category (expenses only, filtered by month)",
+        chartNote: "This chart and table show total expenses only per category for the selected month. “All” includes every month.",
+
+        tableHeaderCategory: "Category",
+        tableHeaderAmount: "Amount",
+        tableHeaderPercent: "% of expenses",
+
+        noData: "No expense data for this period.",
+        noDate: "no date",
+
+        alertEnterAmount: "Please enter an amount.",
+        alertValidPositive: "Please enter a valid positive number.",
+        alertNoUndo: "No transactions to undo.",
+        alertConfirmClear: "Are you sure you want to delete ALL transactions? This cannot be undone.",
+        alertNoDataExport: "No data to export.",
+        lastUndonePrefix: "Last transaction undone:",
+
+        footerText: "Data is stored in your browser (local only).\nHustleMoney Tracker – Bright TODAN.",
+
+        // Category dropdown labels
+        catGeneral: "General",
+        catFood: "Food",
+        catTransport: "Transport",
+        catInternet: "Internet",
+        catRent: "Rent",
+        catBusiness: "Business",
+        catUSC: "USC",
+        catCampusFrance: "Campus France",
+        catSavings: "Savings",
+        catOther: "Other / Custom"
+      },
+      fr: {
+        heroBadge: "💰 Suis tes finances • Web & PC",
+        heroSub: "Un suivi simple de tes revenus et dépenses pour étudiants, entrepreneurs et petits business. Garde le contrôle de ton argent en quelques clics.",
+        heroFeat1Title: "📊 Vue claire",
+        heroFeat1Text: "Vois rapidement tes revenus, dépenses et ton solde.",
+        heroFeat2Title: "📱 Fonctionne sur téléphone",
+        heroFeat2Text: "Ouvre dans ton navigateur ou installe-le sur ton écran d'accueil.",
+        heroFeat3Title: "🌍 Multi-devises",
+        heroFeat3Text: "USD, CFA, GHS, NGN, EUR et d'autres à venir.",
+        heroFeat4Title: "📥 Export vers Excel",
+        heroFeat4Text: "Télécharge un fichier CSV avec toutes tes données.",
+        heroCtaPrimary: "🚀 Ouvrir le tracker",
+        heroCtaSecondary: "Voir la démo",
+
+        currencyLabel: "Devise :",
+        monthLabel: "Mois :",
+        languageLabel: "Langue :",        
+
+        totalIncomeLabel: "Revenus totaux",
+        totalExpenseLabel: "Dépenses totales",
+        balanceLabel: "Solde",
+
+        typeLabel: "Type",
+        amountLabel: "Montant",
+        categoryLabel: "Catégorie",
+        noteLabel: "Note (optionnel)",
+        dateLabel: "Date",
+
+        addTransactionButton: "Ajouter l'opération",
+        undoLastButton: "Annuler la dernière",
+        exportCsvButton: "Exporter CSV",
+        clearAllButton: "Tout effacer",
+
+        transactionsTitle: "Opérations",
+
+        spendingTitle: "Dépenses par catégorie (dépenses uniquement, filtrées par mois)",
+        chartNote: "Ce graphique et ce tableau montrent uniquement le total des dépenses par catégorie pour le mois sélectionné. « Tous » inclut tous les mois.",
+
+        tableHeaderCategory: "Catégorie",
+        tableHeaderAmount: "Montant",
+        tableHeaderPercent: "% des dépenses",
+
+        noData: "Aucune dépense pour cette période.",
+        noDate: "sans date",
+
+        alertEnterAmount: "Veuillez saisir un montant.",
+        alertValidPositive: "Veuillez saisir un nombre positif valide.",
+        alertNoUndo: "Aucune opération à annuler.",
+        alertConfirmClear: "Êtes-vous sûr de vouloir supprimer TOUTES les opérations ? Cette action est irréversible.",
+        alertNoDataExport: "Aucune donnée à exporter.",
+        lastUndonePrefix: "Dernière opération annulée :",
+
+        footerText: "Les données sont stockées dans ton navigateur (en local).\nHustleMoney Tracker – Bright TODAN.",
+
+        catGeneral: "Général",
+        catFood: "Nourriture",
+        catTransport: "Transport",
+        catInternet: "Internet",
+        catRent: "Loyer",
+        catBusiness: "Business",
+        catUSC: "USC",
+        catCampusFrance: "Campus France",
+        catSavings: "Épargne",
+        catOther: "Autre / Perso"
+      }
+    };
+
+    function t(key) {
+      return (translations[currentLang] && translations[currentLang][key]) || key;
+    }
+
+    // ELEMENTS
     const totalIncomeEl = document.getElementById("totalIncome");
     const totalExpenseEl = document.getElementById("totalExpense");
     const balanceEl = document.getElementById("balance");
@@ -574,6 +723,7 @@
     const dateEl = document.getElementById("date");
     const currencyEl = document.getElementById("currency");
     const monthFilterEl = document.getElementById("monthFilter");
+    const langSelectEl = document.getElementById("langSelect");
 
     const addBtn = document.getElementById("addBtn");
     const undoBtn = document.getElementById("undoBtn");
@@ -581,6 +731,39 @@
     const clearBtn = document.getElementById("clearBtn");
 
     const categoryTotalsBody = document.getElementById("categoryTotalsBody");
+
+    // LABEL ELEMENTS FOR TRANSLATION
+    const currencyLabelEl = document.getElementById("currencyLabel");
+    const monthLabelEl = document.getElementById("monthLabel");
+    const languageLabelEl = document.getElementById("languageLabel");
+    const totalIncomeLabelEl = document.getElementById("totalIncomeLabel");
+    const totalExpenseLabelEl = document.getElementById("totalExpenseLabel");
+    const balanceLabelEl = document.getElementById("balanceLabel");
+    const typeLabelEl = document.getElementById("typeLabel");
+    const amountLabelLabelEl = document.getElementById("amountLabel");
+    const categoryLabelLabelEl = document.getElementById("categoryLabel");
+    const noteLabelLabelEl = document.getElementById("noteLabel");
+    const dateLabelLabelEl = document.getElementById("dateLabel");
+    const transactionsTitleEl = document.getElementById("transactionsTitle");
+    const spendingTitleEl = document.getElementById("spendingTitle");
+    const chartNoteEl = document.getElementById("chartNote");
+    const tableHeaderCategoryEl = document.getElementById("tableHeaderCategory");
+    const tableHeaderAmountEl = document.getElementById("tableHeaderAmount");
+    const tableHeaderPercentEl = document.getElementById("tableHeaderPercent");
+    const footerTextEl = document.getElementById("footerText");
+
+    const heroBadgeEl = document.getElementById("heroBadge");
+    const heroSubEl = document.getElementById("heroSub");
+    const heroFeat1TitleEl = document.getElementById("heroFeat1Title");
+    const heroFeat1TextEl = document.getElementById("heroFeat1Text");
+    const heroFeat2TitleEl = document.getElementById("heroFeat2Title");
+    const heroFeat2TextEl = document.getElementById("heroFeat2Text");
+    const heroFeat3TitleEl = document.getElementById("heroFeat3Title");
+    const heroFeat3TextEl = document.getElementById("heroFeat3Text");
+    const heroFeat4TitleEl = document.getElementById("heroFeat4Title");
+    const heroFeat4TextEl = document.getElementById("heroFeat4Text");
+    const heroCtaPrimaryEl = document.getElementById("heroCtaPrimary");
+    const heroCtaSecondaryEl = document.getElementById("heroCtaSecondary");
 
     function currencySymbol() {
       switch (currency) {
@@ -614,12 +797,118 @@
       localStorage.setItem(CURRENCY_KEY, currency);
     }
 
+    function loadLanguageFirst() {
+      const saved = localStorage.getItem(LANG_KEY);
+      if (saved && (saved === "en" || saved === "fr")) {
+        currentLang = saved;
+      } else {
+        currentLang = "en";
+      }
+      langSelectEl.value = currentLang;
+      applyTranslations();
+    }
+
+    function saveLanguage() {
+      localStorage.setItem(LANG_KEY, currentLang);
+    }
+
+    function applyTranslations() {
+      // Hero
+      heroBadgeEl.textContent = t("heroBadge");
+      heroSubEl.textContent = t("heroSub");
+      heroFeat1TitleEl.textContent = t("heroFeat1Title");
+      heroFeat1TextEl.textContent = t("heroFeat1Text");
+      heroFeat2TitleEl.textContent = t("heroFeat2Title");
+      heroFeat2TextEl.textContent = t("heroFeat2Text");
+      heroFeat3TitleEl.textContent = t("heroFeat3Title");
+      heroFeat3TextEl.textContent = t("heroFeat3Text");
+      heroFeat4TitleEl.textContent = t("heroFeat4Title");
+      heroFeat4TextEl.textContent = t("heroFeat4Text");
+      heroCtaPrimaryEl.textContent = t("heroCtaPrimary");
+      heroCtaSecondaryEl.textContent = t("heroCtaSecondary");
+
+      // Filters
+      currencyLabelEl.textContent = t("currencyLabel");
+      monthLabelEl.textContent = t("monthLabel");
+      languageLabelEl.textContent = t("languageLabel");
+
+      // Summary labels
+      totalIncomeLabelEl.textContent = t("totalIncomeLabel");
+      totalExpenseLabelEl.textContent = t("totalExpenseLabel");
+      balanceLabelEl.textContent = t("balanceLabel");
+
+      // Form labels
+      typeLabelEl.textContent = t("typeLabel");
+      amountLabelLabelEl.textContent = t("amountLabel");
+      categoryLabelLabelEl.textContent = t("categoryLabel");
+      noteLabelLabelEl.textContent = t("noteLabel");
+      dateLabelLabelEl.textContent = t("dateLabel");
+
+      // Buttons
+      addBtn.textContent = t("addTransactionButton");
+      undoBtn.textContent = t("undoLastButton");
+      exportBtn.textContent = t("exportCsvButton");
+      clearBtn.textContent = t("clearAllButton");
+
+      // Section titles
+      transactionsTitleEl.textContent = t("transactionsTitle");
+      spendingTitleEl.textContent = t("spendingTitle");
+      chartNoteEl.textContent = t("chartNote");
+
+      // Table headers
+      tableHeaderCategoryEl.textContent = t("tableHeaderCategory");
+      tableHeaderAmountEl.textContent = t("tableHeaderAmount");
+      tableHeaderPercentEl.textContent = t("tableHeaderPercent");
+
+      // Footer
+      footerTextEl.innerHTML = t("footerText").replace("\n", "<br />");
+
+      // Category dropdown labels
+      const catOptions = categoryEl.options;
+      for (let i = 0; i < catOptions.length; i++) {
+        const opt = catOptions[i];
+        switch (opt.value) {
+          case "General":
+            opt.textContent = t("catGeneral");
+            break;
+          case "Food":
+            opt.textContent = t("catFood");
+            break;
+          case "Transport":
+            opt.textContent = t("catTransport");
+            break;
+          case "Internet":
+            opt.textContent = t("catInternet");
+            break;
+          case "Rent":
+            opt.textContent = t("catRent");
+            break;
+          case "Business":
+            opt.textContent = t("catBusiness");
+            break;
+          case "USC":
+            opt.textContent = t("catUSC");
+            break;
+          case "Campus France":
+            opt.textContent = t("catCampusFrance");
+            break;
+          case "Savings":
+            opt.textContent = t("catSavings");
+            break;
+          case "Other":
+            opt.textContent = t("catOther");
+            break;
+        }
+      }
+    }
+
     function normalizeTransactions(list) {
       return list.map(tx => ({
         type: tx.type,
         amount: tx.amount,
         label: tx.label || "",
         date: tx.date || "",
+        time: tx.time || "",
         category: tx.category || "Uncategorized"
       }));
     }
@@ -651,6 +940,13 @@
       return `${year}-${month}-${day}`;
     }
 
+    function getCurrentTime() {
+      const d = new Date();
+      const hours = String(d.getHours()).padStart(2, "0");
+      const minutes = String(d.getMinutes()).padStart(2, "0");
+      return `${hours}:${minutes}`;
+    }
+
     function passesMonthFilter(tx) {
       const selected = monthFilterEl.value;
       if (selected === "all") return true;
@@ -668,7 +964,6 @@
         if (tx.type !== "expense") return;
         const cat = tx.category || "Uncategorized";
         if (!totals[cat]) totals[cat] = 0;
-        // Only expenses, but use absolute amount (in case future data has negative)
         totals[cat] += Math.abs(tx.amount);
       });
       return totals;
@@ -682,10 +977,10 @@
         const row = document.createElement("tr");
         const cell = document.createElement("td");
         cell.colSpan = 3;
-        cell.textContent = "No expense data for this period.";
+        cell.textContent = t("noData");
         cell.style.color = "#9ca3af";
-        row.appendChild(cell);
         categoryTotalsBody.appendChild(row);
+        row.appendChild(cell);
         return;
       }
 
@@ -736,6 +1031,7 @@
           categoryChart = null;
         }
         ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+        renderCategoryTotals({});
         return;
       }
 
@@ -783,7 +1079,6 @@
         });
       }
 
-      // Also update the table with the same totals
       renderCategoryTotals(totals);
     }
 
@@ -817,7 +1112,9 @@
 
         const metaSpan = document.createElement("div");
         metaSpan.className = "tx-meta";
-        metaSpan.textContent = `${tx.date || "no date"}`;
+        const dateText = tx.date || t("noDate");
+        const timeText = tx.time ? " · " + tx.time : "";
+        metaSpan.textContent = `${dateText}${timeText}`;
 
         left.appendChild(typeSpan);
         left.appendChild(labelSpan);
@@ -842,7 +1139,6 @@
 
       const expenseOnly = filtered.filter(tx => tx.type === "expense");
       updateCategoryChart(expenseOnly);
-      // renderCategoryTotals is already called in updateCategoryChart with same totals
     }
 
     function addTransaction() {
@@ -851,15 +1147,16 @@
       const label = labelEl.value.trim();
       const category = categoryEl.value;
       const dateVal = dateEl.value || getTodayISO();
+      const timeVal = getCurrentTime(); // automatic current time
 
       if (!amountValue) {
-        alert("Please enter an amount.");
+        alert(t("alertEnterAmount"));
         return;
       }
 
       const amount = parseFloat(amountValue);
       if (isNaN(amount) || amount <= 0) {
-        alert("Please enter a valid positive number.");
+        alert(t("alertValidPositive"));
         return;
       }
 
@@ -868,6 +1165,7 @@
         amount,
         label,
         date: dateVal,
+        time: timeVal,
         category
       };
 
@@ -881,20 +1179,18 @@
 
     function undoLast() {
       if (transactions.length === 0) {
-        alert("No transactions to undo.");
+        alert(t("alertNoUndo"));
         return;
       }
       const last = transactions.pop();
       saveTransactions();
       render();
-      alert(
-        `Last transaction undone: ${last.type} - ${currencySymbol()} ${formatNumber(last.amount)} `
-        + `(${last.category || "Uncategorized"}${last.label ? " – " + last.label : ""})`
-      );
+      const msg = `${t("lastUndonePrefix")} ${last.type} - ${currencySymbol()} ${formatNumber(last.amount)} (${last.category || "Uncategorized"}${last.label ? " – " + last.label : ""})`;
+      alert(msg);
     }
 
     function clearAll() {
-      if (!confirm("Are you sure you want to delete ALL transactions? This cannot be undone.")) {
+      if (!confirm(t("alertConfirmClear"))) {
         return;
       }
       transactions = [];
@@ -904,17 +1200,18 @@
 
     function exportCSV() {
       if (transactions.length === 0) {
-        alert("No data to export.");
+        alert(t("alertNoDataExport"));
         return;
       }
 
-      const header = ["type", "amount", "category", "label", "date", "currency"];
+      const header = ["type", "amount", "category", "label", "date", "time", "currency"];
       const rows = transactions.map(tx => [
         tx.type,
         tx.amount,
         tx.category || "",
         tx.label || "",
         tx.date || "",
+        tx.time || "",
         currency
       ]);
 
@@ -949,6 +1246,7 @@
     function init() {
       dateEl.value = getTodayISO();
       loadCurrencyFirst();
+      loadLanguageFirst();
       loadTransactions();
       registerServiceWorker();
 
@@ -962,6 +1260,12 @@
         render();
       });
       monthFilterEl.addEventListener("change", render);
+      langSelectEl.addEventListener("change", () => {
+        currentLang = langSelectEl.value;
+        saveLanguage();
+        applyTranslations();
+        render();
+      });
     }
 
     init();
