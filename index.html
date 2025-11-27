@@ -146,17 +146,31 @@
       font-size: 0.8rem;
       color: #9ca3af;
     }
-    .currency-row {
+    .row-filters {
       margin-top: 8px;
       display: flex;
       justify-content: center;
       gap: 8px;
       align-items: center;
       font-size: 0.8rem;
+      flex-wrap: wrap;
     }
-    .currency-row label {
+    .row-filters label {
       color: #9ca3af;
     }
+    .row-filters select {
+      padding: 4px 8px;
+      border-radius: 999px;
+      border: 1px solid #1f2937;
+      background: #020617;
+      color: #e5e7eb;
+      font-size: 0.8rem;
+    }
+    .row-filters select:focus {
+      outline: none;
+      border-color: #22c55e;
+    }
+
     .card {
       background: #020617;
       border-radius: 12px;
@@ -371,7 +385,7 @@
           <h2>Tracker Panel</h2>
           <p>HustleMoney Tracker v1.0 – Developed by Bright TODAN</p>
 
-          <div class="currency-row">
+          <div class="row-filters">
             <label for="currency">Currency:</label>
             <select id="currency">
               <option value="USD">$ – USD</option>
@@ -379,6 +393,23 @@
               <option value="GHS">₵ – GHS</option>
               <option value="NGN">₦ – NGN</option>
               <option value="EUR">€ – EUR</option>
+            </select>
+
+            <label for="monthFilter">Month:</label>
+            <select id="monthFilter">
+              <option value="all">All</option>
+              <option value="1">January</option>
+              <option value="2">February</option>
+              <option value="3">March</option>
+              <option value="4">April</option>
+              <option value="5">May</option>
+              <option value="6">June</option>
+              <option value="7">July</option>
+              <option value="8">August</option>
+              <option value="9">September</option>
+              <option value="10">October</option>
+              <option value="11">November</option>
+              <option value="12">December</option>
             </select>
           </div>
         </div>
@@ -464,12 +495,13 @@
 
         <!-- Category Pie Chart Card -->
         <div class="card">
-          <div class="list-section-title">Spending by Category</div>
+          <div class="list-section-title">Spending by Category (filtered by month)</div>
           <div class="chart-container">
             <canvas id="categoryChart"></canvas>
           </div>
           <div class="chart-note">
-            This chart shows total amounts per category (income and expense combined by absolute value).
+            This chart shows total amounts per category (income and expense combined, using absolute values)
+            for the selected month. “All” includes every month.
           </div>
         </div>
       </div>
@@ -500,6 +532,7 @@
     const labelEl = document.getElementById("label");
     const dateEl = document.getElementById("date");
     const currencyEl = document.getElementById("currency");
+    const monthFilterEl = document.getElementById("monthFilter");
 
     const addBtn = document.getElementById("addBtn");
     const undoBtn = document.getElementById("undoBtn");
@@ -572,19 +605,28 @@
       return `${year}-${month}-${day}`;
     }
 
-    function getCategoryTotals() {
+    function passesMonthFilter(tx) {
+      const selected = monthFilterEl.value;
+      if (selected === "all") return true;
+      if (!tx.date) return true;
+      const d = new Date(tx.date);
+      if (isNaN(d.getTime())) return true;
+      const month = d.getMonth() + 1; // 1–12
+      return String(month) === selected;
+    }
+
+    function getCategoryTotals(filteredList) {
       const totals = {};
-      transactions.forEach((tx) => {
+      filteredList.forEach((tx) => {
         const cat = tx.category || "Uncategorized";
         if (!totals[cat]) totals[cat] = 0;
-        // Use absolute value so both income and expense affect chart
         totals[cat] += Math.abs(tx.amount);
       });
       return totals;
     }
 
-    function updateCategoryChart() {
-      const totals = getCategoryTotals();
+    function updateCategoryChart(filteredList) {
+      const totals = getCategoryTotals(filteredList);
       const labels = [];
       const data = [];
 
@@ -657,7 +699,9 @@
 
       txListEl.innerHTML = "";
 
-      transactions.forEach((tx) => {
+      const filtered = transactions.filter(passesMonthFilter);
+
+      filtered.forEach((tx) => {
         if (tx.type === "income") totalIncome += tx.amount;
         else if (tx.type === "expense") totalExpense += tx.amount;
 
@@ -702,7 +746,7 @@
       totalExpenseEl.textContent = `${sym} ${formatNumber(totalExpense)}`;
       balanceEl.textContent = `${sym} ${formatNumber(balance)}`;
 
-      updateCategoryChart();
+      updateCategoryChart(filtered);
     }
 
     function addTransaction() {
@@ -747,7 +791,10 @@
       const last = transactions.pop();
       saveTransactions();
       render();
-      alert(`Last transaction undone: ${last.type} - ${currencySymbol()} ${formatNumber(last.amount)} (${last.category || "Uncategorized"}${last.label ? " – " + last.label : ""})`);
+      alert(
+        `Last transaction undone: ${last.type} - ${currencySymbol()} ${formatNumber(last.amount)} `
+        + `(${last.category || "Uncategorized"}${last.label ? " – " + last.label : ""})`
+      );
     }
 
     function clearAll() {
@@ -818,6 +865,7 @@
         saveCurrency();
         render();
       });
+      monthFilterEl.addEventListener("change", render);
     }
 
     init();
