@@ -9,27 +9,139 @@
   <style>
     body {
       font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      background: #0f172a;
+      background: #020617;
       color: #e5e7eb;
       margin: 0;
       padding: 0;
+    }
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+    .page {
+      max-width: 640px;
+      margin: 0 auto;
+      padding: 16px;
+    }
+    /* HERO / LANDING */
+    .hero {
+      text-align: center;
+      padding: 24px 16px 16px;
+    }
+    .hero-logo {
+      width: 72px;
+      height: 72px;
+      margin: 0 auto 8px;
+      border-radius: 24px;
+      background: radial-gradient(circle at 20% 20%, #22c55e, #15803d);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+    .hero-logo img {
+      max-width: 100%;
+      max-height: 100%;
+      display: block;
+    }
+    .hero-title {
+      font-size: 1.6rem;
+      font-weight: 700;
+      margin: 8px 0 4px;
+    }
+    .hero-sub {
+      font-size: 0.9rem;
+      color: #9ca3af;
+      margin-bottom: 12px;
+    }
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 10px;
+      border-radius: 999px;
+      font-size: 0.7rem;
+      background: rgba(34,197,94,0.1);
+      color: #4ade80;
+      margin-bottom: 10px;
+    }
+    .hero-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 8px;
+      margin: 12px 0 16px;
+      font-size: 0.8rem;
+    }
+    .hero-feature {
+      background: #020617;
+      border-radius: 12px;
+      padding: 8px 10px;
+      border: 1px solid #1f2937;
+      text-align: left;
+    }
+    .hero-feature-title {
+      font-weight: 600;
+      margin-bottom: 2px;
+      font-size: 0.8rem;
+    }
+    .hero-feature-text {
+      color: #9ca3af;
+      font-size: 0.75rem;
+    }
+    .hero-cta-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      justify-content: center;
+      margin-top: 4px;
+    }
+    .btn-primary,
+    .btn-ghost {
+      border-radius: 999px;
+      padding: 8px 16px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      border: none;
+      cursor: pointer;
+    }
+    .btn-primary {
+      background: #22c55e;
+      color: #020617;
+    }
+    .btn-ghost {
+      background: transparent;
+      border: 1px solid #334155;
+      color: #cbd5f5;
+    }
+    .btn-primary:active,
+    .btn-ghost:active {
+      transform: scale(0.97);
+    }
+
+    /* APP CONTAINER */
+    .app-card-wrapper {
+      margin-top: 12px;
     }
     .app-container {
       max-width: 480px;
       margin: 0 auto;
       padding: 16px;
+      background: #0f172a;
+      border-radius: 16px;
+      box-shadow: 0 12px 30px rgba(15,23,42,0.8);
+      border: 1px solid #1f2937;
     }
     .title {
       text-align: center;
       margin-bottom: 8px;
     }
-    .title h1 {
-      font-size: 1.4rem;
+    .title h2 {
+      font-size: 1.2rem;
       margin: 0;
     }
     .title p {
       margin: 4px 0 0;
-      font-size: 0.85rem;
+      font-size: 0.8rem;
       color: #9ca3af;
     }
     .currency-row {
@@ -44,11 +156,12 @@
       color: #9ca3af;
     }
     .card {
-      background: #111827;
+      background: #020617;
       border-radius: 12px;
       padding: 12px;
       margin-bottom: 12px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+      border: 1px solid #1f2937;
     }
     .summary-grid {
       display: grid;
@@ -178,11 +291,14 @@
       text-align: center;
       font-size: 0.7rem;
       color: #6b7280;
-      margin-top: 12px;
+      margin-top: 16px;
       padding-bottom: 8px;
     }
 
     @media (max-width: 480px) {
+      .page {
+        padding: 12px;
+      }
       .app-container {
         padding: 12px;
       }
@@ -190,85 +306,134 @@
   </style>
 </head>
 <body>
-  <div class="app-container">
-    <div class="title">
-      <h1>HustleMoney Tracker v1.0</h1>
-      <p>Developed by Bright TODAN – Web Edition</p>
-
-      <div class="currency-row">
-        <label for="currency">Currency:</label>
-        <select id="currency">
-          <option value="USD">$ – USD</option>
-          <option value="CFA">Fr – CFA</option>
-          <option value="GHS">₵ – GHS</option>
-          <option value="NGN">₦ – NGN</option>
-          <option value="EUR">€ – EUR</option>
-        </select>
+  <div class="page">
+    <!-- MINI LANDING / HERO -->
+    <section class="hero">
+      <div class="hero-logo">
+        <!-- if logo.png exists in repo, it will show, otherwise just the gradient circle -->
+        <img src="logo.png" alt="HustleMoney logo" onerror="this.style.display='none';" />
       </div>
-    </div>
+      <div class="hero-badge">
+        💰 Track your cashflow • Web & PC
+      </div>
+      <h1 class="hero-title">HustleMoney Tracker</h1>
+      <p class="hero-sub">
+        Simple income & expense tracker for students, hustlers and small business owners.
+        Keep control of your money in a few taps.
+      </p>
 
-    <!-- Summary Card -->
-    <div class="card">
-      <div class="summary-grid">
-        <div class="summary-item">
-          <div class="summary-label">Total Income</div>
-          <div id="totalIncome" class="summary-value summary-income">$ 0.00</div>
+      <div class="hero-grid">
+        <div class="hero-feature">
+          <div class="hero-feature-title">📊 Clear overview</div>
+          <div class="hero-feature-text">See total income, expenses and balance at a glance.</div>
         </div>
-        <div class="summary-item">
-          <div class="summary-label">Total Expense</div>
-          <div id="totalExpense" class="summary-value summary-expense">$ 0.00</div>
+        <div class="hero-feature">
+          <div class="hero-feature-title">📱 Works on phone</div>
+          <div class="hero-feature-text">Open in your browser or install it on your home screen.</div>
         </div>
-        <div class="summary-item">
-          <div class="summary-label">Balance</div>
-          <div id="balance" class="summary-value summary-balance">$ 0.00</div>
+        <div class="hero-feature">
+          <div class="hero-feature-title">🌍 Multi-currency</div>
+          <div class="hero-feature-text">USD, CFA, GHS, NGN, EUR and more to come.</div>
         </div>
-      </div>
-    </div>
-
-    <!-- Form Card -->
-    <div class="card">
-      <div class="form-row">
-        <label for="type">Type</label>
-        <select id="type">
-          <option value="income">Income</option>
-          <option value="expense">Expense</option>
-        </select>
-      </div>
-
-      <div class="form-row">
-        <label for="amount">Amount</label>
-        <input id="amount" type="number" step="0.01" placeholder="e.g. 2500" />
-      </div>
-
-      <div class="form-row">
-        <label for="label">Source / Category</label>
-        <input id="label" type="text" placeholder="e.g. USC Talent, Internet, Food..." />
-      </div>
-
-      <div class="form-row">
-        <label for="date">Date</label>
-        <input id="date" type="date" />
-      </div>
-
-      <div class="btn-row">
-        <button id="addBtn">Add Transaction</button>
-        <button id="undoBtn" class="secondary small">Undo Last</button>
-      </div>
-    </div>
-
-    <!-- Transactions Card -->
-    <div class="card">
-      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
-        <span class="list-section-title">Transactions</span>
-        <div class="btn-row" style="gap:6px;">
-          <button id="exportBtn" class="secondary small">Export CSV</button>
-          <button id="clearBtn" class="danger small">Clear All</button>
+        <div class="hero-feature">
+          <div class="hero-feature-title">📥 Export to Excel</div>
+          <div class="hero-feature-text">Download a CSV file with all your data.</div>
         </div>
       </div>
-      <div id="txList" class="list">
-        <!-- Transactions will appear here -->
+
+      <div class="hero-cta-row">
+        <button class="btn-primary" onclick="document.getElementById('app').scrollIntoView({behavior:'smooth'});">
+          🚀 Open the tracker
+        </button>
+        <button class="btn-ghost" onclick="document.getElementById('app').scrollIntoView({behavior:'smooth'});">
+          View demo
+        </button>
       </div>
-    </div>
+    </section>
+
+    <!-- APP CARD -->
+    <section id="app" class="app-card-wrapper">
+      <div class="app-container">
+        <div class="title">
+          <h2>Tracker Panel</h2>
+          <p>HustleMoney Tracker v1.0 – Developed by Bright TODAN</p>
+
+          <div class="currency-row">
+            <label for="currency">Currency:</label>
+            <select id="currency">
+              <option value="USD">$ – USD</option>
+              <option value="CFA">Fr – CFA</option>
+              <option value="GHS">₵ – GHS</option>
+              <option value="NGN">₦ – NGN</option>
+              <option value="EUR">€ – EUR</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Summary Card -->
+        <div class="card">
+          <div class="summary-grid">
+            <div class="summary-item">
+              <div class="summary-label">Total Income</div>
+              <div id="totalIncome" class="summary-value summary-income">$ 0.00</div>
+            </div>
+            <div class="summary-item">
+              <div class="summary-label">Total Expense</div>
+              <div id="totalExpense" class="summary-value summary-expense">$ 0.00</div>
+            </div>
+            <div class="summary-item">
+              <div class="summary-label">Balance</div>
+              <div id="balance" class="summary-value summary-balance">$ 0.00</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Form Card -->
+        <div class="card">
+          <div class="form-row">
+            <label for="type">Type</label>
+            <select id="type">
+              <option value="income">Income</option>
+              <option value="expense">Expense</option>
+            </select>
+          </div>
+
+          <div class="form-row">
+            <label for="amount">Amount</label>
+            <input id="amount" type="number" step="0.01" placeholder="e.g. 2500" />
+          </div>
+
+          <div class="form-row">
+            <label for="label">Source / Category</label>
+            <input id="label" type="text" placeholder="e.g. USC Talent, Internet, Food..." />
+          </div>
+
+          <div class="form-row">
+            <label for="date">Date</label>
+            <input id="date" type="date" />
+          </div>
+
+          <div class="btn-row">
+            <button id="addBtn">Add Transaction</button>
+            <button id="undoBtn" class="secondary small">Undo Last</button>
+          </div>
+        </div>
+
+        <!-- Transactions Card -->
+        <div class="card">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+            <span class="list-section-title">Transactions</span>
+            <div class="btn-row" style="gap:6px;">
+              <button id="exportBtn" class="secondary small">Export CSV</button>
+              <button id="clearBtn" class="danger small">Clear All</button>
+            </div>
+          </div>
+          <div id="txList" class="list">
+            <!-- Transactions will appear here -->
+          </div>
+        </div>
+      </div>
+    </section>
 
     <div class="footer">
       Data is stored in your browser (local only).<br />
@@ -511,9 +676,23 @@
       render();
     });
 
-    loadCurrency();
-    loadTransactions();
-    registerServiceWorker();
+    function loadCurrencyFirst() {
+      const saved = localStorage.getItem(CURRENCY_KEY);
+      if (saved) {
+        currency = saved;
+      } else {
+        currency = "USD";
+      }
+      currencyEl.value = currency;
+    }
+
+    function init() {
+      loadCurrencyFirst();
+      loadTransactions();
+      registerServiceWorker();
+    }
+
+    init();
   </script>
 </body>
 </html>
